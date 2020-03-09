@@ -69,10 +69,10 @@ class IRNode:
             # settings.log(0, lambda: self.indented(prog, 'Evaluating {}'.format(self))
 
         result = self.evaluate_node(prog)
-        if type(result) is tuple:
-            result = (self.simplify(prog, result[0]), result[1])
-        else:
-            result = self.simplify(prog, result)
+        # if type(result) is tuple:
+        #     result = (self.simplify(prog, result[0]), result[1])
+        # else:
+        #     result = self.simplify(prog, result)
 
         prog.eval_level -= 1
 

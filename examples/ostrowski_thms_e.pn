@@ -1,0 +1,44 @@
+#import("ostrowski_defs.pn")
+
+#load("ostrowski/sturmian_word.txt", "pecan", $C(n))
+
+Alias "Theorem" ==> Execute uncurry theoremCheck .
+
+//#load("not_square.aut", "hoa", not_square(a,i,n))
+
+bco_positive(x) := @simplify[exists z. bco_zero(z) & bco_lt(z, x)]
+
+// not_square(a,i,n) := @no_simplify[
+//         exists j, ij, ijn.
+//             !(bco_standard(a) => (
+//                 (@postprocess[bco_valid2(a,i,n) & bco_positive(n)]) &
+//                     (bco_lt(j,n) & bco_adder(a,i,j,ij) & bco_adder(a,ij,n,ijn)) => @postprocess[$C[ij] = $C[ijn]]))
+//     ]
+// #save_image("bco_one.png", not_square)
+
+bco_one(a,i) := bco_standard(a) & exists z. bco_zero(z) & bco_valid(a,i) & bco_succ(a,z,i)
+#save_aut("bco_one.aut", bco_one)
+
+bco_no_one(a) :=  bco_standard(a) & forall i,z. (bco_zero(z) & bco_valid(a,i)) => !bco_succ(a,z,i)
+Display example ostrowskiFormat { bco_no_one(x) }.
+#save_aut_img("bco_no_one.svg", bco_no_one)
+#assert_prop(true, bco_no_one)
+
+
+
+//Theorem ("'All Sturmian words contain squares'", {
+//    @no_simplify[
+//        forall a. exists i, n. !not_square(a,i,n)
+//    ]
+//}) .
+
+
+//Aj j<n => C2[i+j] = C2[i+n-1-j]
+palindrome(a,i,n) := @no_simplify[
+         forall j, ij, in, in1, in1j, one.
+             (bco_standard(a) &
+                 (@postprocess[bco_valid3(a,i,j,n) & bco_positive(n)]) &
+                     @no_simplify[(bco_lt(j,n) & bco_adder(a,i,j,ij) & bco_adder(a,i,n,in) & bco_one(a,one)
+                     & bco_adder(a,in1,one,in) & bco_adder(a,in1j,j,in1))]) => @postprocess[$C[ij] = $C[in1j]]
+     ]
+     #save_aut("blah.aut", palindrome)

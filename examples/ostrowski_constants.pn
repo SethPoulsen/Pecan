@@ -1,0 +1,23 @@
+// It is an extension of the ostrowski.pn test file that deals shows constants
+
+#load("ostrowski/bco_simple_valid.txt", "walnut", bco_simple_valid(a, x))
+#load("ostrowski/bco_standard.txt", "walnut", bco_standard(a))
+#load("ostrowski/bco_leq.txt", "walnut", bco_leq(x, y))
+#load("ostrowski/bco_adder.txt", "walnut", bco_adder(a, x, y, z))
+#load("ostrowski/bco_alphabet.txt", "walnut", bco_alphabet(w))
+#load("ostrowski/bco_finite_rep.txt", "walnut", bco_finite_rep(n))
+
+#save_aut_img("test.svg", bco_finite_rep)
+
+bco_valid(a, x) := bco_simple_valid(a, x) & bco_standard(a) & bco_finite_rep(x)
+bco_valid2(a, x, y) := bco_valid(a, x) & bco_valid(a, y)
+bco_valid3(a, x, y, z) := bco_valid2(a, x, y) & bco_valid(a, z)
+
+bco_eq(x, y) := bco_leq(x, y) & bco_leq(y, x)
+bco_zero(z) := exists a. bco_valid(a,z) & forall y. bco_valid(a,y) => bco_leq(z,y)
+bco_succ(a, x, y) := bco_valid2(a, x, y) & bco_leq(x, y) & ~bco_eq(x, y) & forall z. bco_valid(a,z) => (bco_leq(z,x) | bco_leq(y,z))
+
+bco_one(a, x) := exists z. bco_zero(z) & bco_succ(a,z,x)
+bco_two(a, y) := exists x. bco_one(z) & bco_succ(a,x,y)
+Display example natFormat { bco_zero(x) }.
+
