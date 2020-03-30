@@ -47,11 +47,11 @@ antisquare(a, n) :=
             @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] != $C[jn]]]])]
     ]
 
-Theorem ("All Sturmian words contain finitely many antisquares", {
-    forall a. bco_standard(a) =>
-    exists m. bco_valid(a, m) &
-    forall n. antisquare(a, n) => bco_leq(n, m)
-}).
+//Theorem ("All Sturmian words contain finitely many antisquares", {
+//    forall a. bco_standard(a) =>
+//    exists m. bco_valid(a, m) &
+//    forall n. antisquare(a, n) => bco_leq(n, m)
+//}).
 
 // Theorem ("All Sturmian words contain squares", {
 //     @no_simplify[
@@ -72,9 +72,54 @@ cube(a, n) :=
         //     @postprocess[forall jn. bco_adder(a, j, n, jn) => $C[j] = $C[jn]]]])]
     ]
 
-Theorem ("All Sturmian words contain cubes", {
+//Theorem ("All Sturmian words contain cubes", {
+//    @no_simplify[
+//        forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & cube(a,n)
+//    ]
+//}) .
+
+//bco_one
+bco_one(a,one) := forall zero. bco_zero(zero) => bco_succ(a,zero,one)
+
+//Aj j<n => C2[i+j] = C2[i+i+n-1-(i+j)] 
+//sum = i+i+n-1
+//bound = i+n
+//doesn't work
+palindrome(a,n) := @no_simplify[
+        exists i.
+        forall sum, ii, iin.
+         @postprocess[bco_valid2(a, i, n) & bco_adder(a, i, i, ii) & bco_adder(a, ii, n, iin) =>
+         @postprocess[forall one.  @postprocess[bco_one(a,one) & bco_adder(a, sum, one, iin)]] => 
+        @postprocess[forall bound.
+         @postprocess[bco_valid(a,bound) & bco_adder(a, i, n, bound)] => 
+        @postprocess[forall ij. bco_leq(i,ij) & bco_lt(ij, bound) & bco_valid(a, ij) => 
+            @postprocess[forall other. bco_adder(a, ij, other, sum) & bco_valid(a,other) => @postprocess[$C[ij] = $C[other]]]]]]]
+//#save_aut("palindrome.aut", palindrome)
+
+Theorem ("All Sturmian words contain palindromes", {
     @no_simplify[
-        forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & cube(a,n)
+        forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & palindrome(a,n)
     ]
 }) .
 
+//special factors 
+//special_factor(a,i,n) := @no_simplify[
+//    bco_valid2(a,i,n) & (
+//        forall i_. bco_valid(a,i_) & bco_lt(i_, i) =>
+//        exists s. bco_valid(a,s) & bco_lt(s,n) => $C[i_s] != $C[is]
+//    ) & (
+//        exists j, k. (
+//            forall t. bco_lt(t, n) => $C[jt] = $C[it]
+//        ) & (
+//            forall u. bco_lt(u, n) => $C[ku] = $C[iu]
+//        ) & (
+//            $C[jn] != $C[kn]
+//        )
+//    )
+//]
+//
+//Theorem ("All Sturmian words contain palindromes", {
+//    @no_simplify[
+//        forall a. bco_standard(a) => exists n. bco_positive(n) & bco_valid(a,n) & palindrome(a,n)
+//    ]
+//}) .
