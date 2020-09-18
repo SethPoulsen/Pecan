@@ -14,6 +14,8 @@ from pecan.lang.ir import *
 
 from pecan.settings import settings
 
+import matplotlib.pyplot as plt
+
 class DirectiveSaveAut(IRNode):
     def __init__(self, filename, pred_name):
         super().__init__()
@@ -303,7 +305,33 @@ class DirectivePlot(IRNode):
 
     def evaluate(self, prog):
         print("plotting {}".format(self.pred_name))
-        print(Call(self.pred_name, []).evaluate(prog).accepting_word())
+        print(Call(self.pred_name, []).evaluate(prog).aut.num_sets())
+        print("This is working!")
+        n = 3
+        layer = 10
+        strs = [[]]
+        for i in range(n):
+            strs[0].append(str(i))
+
+        for i in range(layer - 1):
+            tmp = []
+            for j in strs[-1]:
+                for k in range(n):
+                    tmp.append(j+str(k))
+            strs.append(tmp)
+
+        y = layer - 1
+        for i in strs:
+            lst = []
+            for j in i:
+                tmp = 0
+                for k in range(len(j)):
+                    tmp += int(j[k]) * n ** (-k-1)
+                lst.append(tmp)
+            plt.scatter(lst,[y]*len(lst), s = 0.01)
+            y -= 1
+        plt.savefig("test.png")
+        # plt.show()
 
     def __repr__(self):
         return '#plot({})'.format(self.pred_name)
